@@ -2,7 +2,7 @@
 """Tests for calc.py."""
 import subprocess
 import sys
-from calc import add
+from calc import add, subtract
 
 
 def test_add_positive():
@@ -32,6 +32,23 @@ def test_add_large_negatives():
     """Test with large negative numbers."""
     assert add(-1000, -2000) == -3000
     assert add(-999999, 1) == -999998
+
+
+# Subtraction Tests
+def test_subtract_positive():
+    assert subtract(5, 3) == 2
+
+
+def test_subtract_zero():
+    assert subtract(5, 5) == 0
+
+
+def test_subtract_negative():
+    assert subtract(-1, -2) == 1
+
+
+def test_subtract_from_negative():
+    assert subtract(-5, 3) == -8
 
 
 # CLI Integration Tests
@@ -75,7 +92,7 @@ def test_cli_add_negative_result():
 
 def test_cli_invalid_operation():
     """Test CLI with invalid operation."""
-    output, code = run_cli(["subtract", "5", "3"])
+    output, code = run_cli(["multiply", "5", "3"])
     assert code != 0
 
 
@@ -85,6 +102,41 @@ def test_cli_missing_args():
     assert code != 0
 
 
+def test_cli_subtract_positive():
+    """Test CLI subtraction with positive numbers."""
+    output, code = run_cli(["subtract", "5", "3"])
+    assert code == 0
+    assert output == "2"
+
+
+def test_cli_subtract_zero():
+    """Test CLI subtraction resulting in zero."""
+    output, code = run_cli(["subtract", "5", "5"])
+    assert code == 0
+    assert output == "0"
+
+
+def test_cli_subtract_negative_result():
+    """Test CLI subtraction with negative result."""
+    output, code = run_cli(["subtract", "3", "5"])
+    assert code == 0
+    assert output == "-2"
+
+
+def test_cli_subtract_from_negative():
+    """Test CLI subtraction from negative number."""
+    output, code = run_cli(["subtract", "-5", "3"])
+    assert code == 0
+    assert output == "-8"
+
+
+def test_cli_subtract_with_negatives():
+    """Test CLI subtracting negative number."""
+    output, code = run_cli(["subtract", "-1", "-2"])
+    assert code == 0
+    assert output == "1"
+
+
 if __name__ == "__main__":
     test_add_positive()
     test_add_zero()
@@ -92,10 +144,19 @@ if __name__ == "__main__":
     test_add_two_negatives()
     test_add_negative_positive()
     test_add_large_negatives()
+    test_subtract_positive()
+    test_subtract_zero()
+    test_subtract_negative()
+    test_subtract_from_negative()
     test_cli_add_positive()
     test_cli_add_single_negative()
     test_cli_add_two_negatives()
     test_cli_add_negative_result()
     test_cli_invalid_operation()
     test_cli_missing_args()
+    test_cli_subtract_positive()
+    test_cli_subtract_zero()
+    test_cli_subtract_negative_result()
+    test_cli_subtract_from_negative()
+    test_cli_subtract_with_negatives()
     print("All tests passed!")

@@ -8,16 +8,20 @@ def add(a, b):
     return a + b
 
 
+def subtract(a, b):
+    return a - b
+
+
 def parse_args():
     """Parse command line arguments, handling negative numbers correctly."""
     parser = argparse.ArgumentParser(
         description="Minimal calculator CLI",
-        usage="calc.py add <num1> <num2>",
+        usage="calc.py <add|subtract> <num1> <num2>",
     )
     parser.add_argument(
         "operation",
-        choices=["add"],
-        help="Operation to perform (currently only 'add' supported)",
+        choices=["add", "subtract"],
+        help="Operation to perform ('add' or 'subtract')",
     )
     parser.add_argument(
         "num1",
@@ -36,6 +40,8 @@ def main():
     args = parse_args()
     if args.operation == "add":
         print(add(args.num1, args.num2))
+    elif args.operation == "subtract":
+        print(subtract(args.num1, args.num2))
 
 
 if __name__ == "__main__":
