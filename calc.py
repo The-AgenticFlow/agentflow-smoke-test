@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Minimal calculator CLI for AgentFlow smoke test."""
-import argparse
 import sys
 
 
@@ -13,35 +12,36 @@ def subtract(a, b):
 
 
 def parse_args():
-    """Parse command line arguments, handling negative numbers correctly."""
-    parser = argparse.ArgumentParser(
-        description="Minimal calculator CLI",
-        usage="calc.py <add|subtract> <num1> <num2>",
-    )
-    parser.add_argument(
-        "operation",
-        choices=["add", "subtract"],
-        help="Operation to perform ('add' or 'subtract')",
-    )
-    parser.add_argument(
-        "num1",
-        type=int,
-        help="First number",
-    )
-    parser.add_argument(
-        "num2",
-        type=int,
-        help="Second number",
-    )
-    return parser.parse_args()
+    """Parse command line arguments, handling negative numbers correctly.
+
+    Uses manual sys.argv parsing to properly handle negative numbers
+    that would otherwise be interpreted as flags by argparse.
+    """
+    if len(sys.argv) != 4:
+        print("Usage: calc.py <add|subtract> <num1> <num2>")
+        sys.exit(1)
+
+    operation = sys.argv[1]
+    if operation not in ("add", "subtract"):
+        print(f"Unknown operation: {operation}")
+        sys.exit(1)
+
+    try:
+        num1 = int(sys.argv[2])
+        num2 = int(sys.argv[3])
+    except ValueError as e:
+        print(f"Invalid number: {e}")
+        sys.exit(1)
+
+    return operation, num1, num2
 
 
 def main():
-    args = parse_args()
-    if args.operation == "add":
-        print(add(args.num1, args.num2))
-    elif args.operation == "subtract":
-        print(subtract(args.num1, args.num2))
+    operation, num1, num2 = parse_args()
+    if operation == "add":
+        print(add(num1, num2))
+    elif operation == "subtract":
+        print(subtract(num1, num2))
 
 
 if __name__ == "__main__":

@@ -2,7 +2,8 @@
 """Tests for calc.py."""
 import subprocess
 import sys
-from calc import add, subtract
+from unittest.mock import patch
+from calc import add, subtract, parse_args
 
 
 def test_add_positive():
@@ -137,6 +138,61 @@ def test_cli_subtract_with_negatives():
     assert output == "1"
 
 
+# parse_args() Unit Tests
+def test_parse_args_basic_add():
+    """Test parse_args with basic add operation."""
+    with patch.object(sys, 'argv', ['calc.py', 'add', '2', '3']):
+        operation, num1, num2 = parse_args()
+        assert operation == 'add'
+        assert num1 == 2
+        assert num2 == 3
+
+
+def test_parse_args_basic_subtract():
+    """Test parse_args with basic subtract operation."""
+    with patch.object(sys, 'argv', ['calc.py', 'subtract', '5', '3']):
+        operation, num1, num2 = parse_args()
+        assert operation == 'subtract'
+        assert num1 == 5
+        assert num2 == 3
+
+
+def test_parse_args_single_negative():
+    """Test parse_args with one negative number: calc.py add -1 2."""
+    with patch.object(sys, 'argv', ['calc.py', 'add', '-1', '2']):
+        operation, num1, num2 = parse_args()
+        assert operation == 'add'
+        assert num1 == -1
+        assert num2 == 2
+
+
+def test_parse_args_two_negatives():
+    """Test parse_args with two negative numbers: calc.py add -5 -3."""
+    with patch.object(sys, 'argv', ['calc.py', 'add', '-5', '-3']):
+        operation, num1, num2 = parse_args()
+        assert operation == 'add'
+        assert num1 == -5
+        assert num2 == -3
+
+
+def test_parse_args_large_negatives():
+    """Test parse_args with large negative numbers."""
+    with patch.object(sys, 'argv', ['calc.py', 'add', '-1000000', '-999999']):
+        operation, num1, num2 = parse_args()
+        assert operation == 'add'
+        assert num1 == -1000000
+        assert num2 == -999999
+
+
+def test_parse_args_negative_with_subtract():
+    """Test parse_args with negative numbers in subtract operation."""
+    with patch.object(sys, 'argv', ['calc.py', 'subtract', '-10', '-5']):
+        operation, num1, num2 = parse_args()
+        assert operation == 'subtract'
+        assert num1 == -10
+        assert num2 == -5
+
+
 if __name__ == "__main__":
     test_add_positive()
     test_add_zero()
@@ -159,4 +215,10 @@ if __name__ == "__main__":
     test_cli_subtract_negative_result()
     test_cli_subtract_from_negative()
     test_cli_subtract_with_negatives()
+    test_parse_args_basic_add()
+    test_parse_args_basic_subtract()
+    test_parse_args_single_negative()
+    test_parse_args_two_negatives()
+    test_parse_args_large_negatives()
+    test_parse_args_negative_with_subtract()
     print("All tests passed!")
