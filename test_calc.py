@@ -138,6 +138,41 @@ def test_cli_subtract_with_negatives():
     assert output == "1"
 
 
+def test_cli_sub_positive():
+    """Test CLI 'sub' alias with positive numbers."""
+    output, code = run_cli(["sub", "5", "3"])
+    assert code == 0
+    assert output == "2"
+
+
+def test_cli_sub_zero():
+    """Test CLI 'sub' alias resulting in zero."""
+    output, code = run_cli(["sub", "5", "5"])
+    assert code == 0
+    assert output == "0"
+
+
+def test_cli_sub_negative_result():
+    """Test CLI 'sub' alias with negative result."""
+    output, code = run_cli(["sub", "3", "5"])
+    assert code == 0
+    assert output == "-2"
+
+
+def test_cli_sub_from_negative():
+    """Test CLI 'sub' alias from negative number."""
+    output, code = run_cli(["sub", "-5", "3"])
+    assert code == 0
+    assert output == "-8"
+
+
+def test_cli_sub_with_negatives():
+    """Test CLI 'sub' alias subtracting negative number."""
+    output, code = run_cli(["sub", "-1", "-2"])
+    assert code == 0
+    assert output == "1"
+
+
 # parse_args() Unit Tests
 def test_parse_args_basic_add():
     """Test parse_args with basic add operation."""
@@ -193,6 +228,15 @@ def test_parse_args_negative_with_subtract():
         assert num2 == -5
 
 
+def test_parse_args_basic_sub():
+    """Test parse_args with 'sub' alias."""
+    with patch.object(sys, 'argv', ['calc.py', 'sub', '5', '3']):
+        operation, num1, num2 = parse_args()
+        assert operation == 'sub'
+        assert num1 == 5
+        assert num2 == 3
+
+
 if __name__ == "__main__":
     test_add_positive()
     test_add_zero()
@@ -215,10 +259,16 @@ if __name__ == "__main__":
     test_cli_subtract_negative_result()
     test_cli_subtract_from_negative()
     test_cli_subtract_with_negatives()
+    test_cli_sub_positive()
+    test_cli_sub_zero()
+    test_cli_sub_negative_result()
+    test_cli_sub_from_negative()
+    test_cli_sub_with_negatives()
     test_parse_args_basic_add()
     test_parse_args_basic_subtract()
     test_parse_args_single_negative()
     test_parse_args_two_negatives()
     test_parse_args_large_negatives()
     test_parse_args_negative_with_subtract()
+    test_parse_args_basic_sub()
     print("All tests passed!")

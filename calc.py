@@ -18,11 +18,11 @@ def parse_args():
     that would otherwise be interpreted as flags by argparse.
     """
     if len(sys.argv) != 4:
-        print("Usage: calc.py <add|subtract> <num1> <num2>")
+        print("Usage: calc.py <add|subtract|sub> <num1> <num2>")
         sys.exit(1)
 
     operation = sys.argv[1]
-    if operation not in ("add", "subtract"):
+    if operation not in ("add", "subtract", "sub"):
         print(f"Unknown operation: {operation}")
         sys.exit(1)
 
@@ -40,7 +40,7 @@ def main():
     operation, num1, num2 = parse_args()
     if operation == "add":
         print(add(num1, num2))
-    elif operation == "subtract":
+    elif operation in ("subtract", "sub"):
         print(subtract(num1, num2))
 
 
